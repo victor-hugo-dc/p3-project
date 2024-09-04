@@ -10,7 +10,7 @@ class Song:
         self.playlist_id = playlist_id
 
     def __repr__(self):
-        return f"<Song {self.id}: {self.title} by {self.artist}>"
+        return f"{self.id}: {self.title} by {self.artist}"
 
     @property
     def title(self):
