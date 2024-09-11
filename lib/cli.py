@@ -2,6 +2,9 @@ from simple_term_menu import TerminalMenu
 from models.playlist import Playlist
 from models.song import Song
 
+CHANGE = 1
+CONSTANT = 0
+
 def create_playlist():
     name = input("Enter playlist name: ").strip()
     Playlist.create(name)
@@ -11,15 +14,27 @@ def list_playlists():
     terminal_menu = TerminalMenu(menu_items, title="Select a Playlist")
     while (choice := terminal_menu.show()) != 0:
         playlist = Playlist.find_by_name(menu_items[choice])
-        playlist_menu(playlist)
+        if playlist_menu(playlist):
+            break # the playlist names must be refreshed
 
 def playlist_menu(playlist: Playlist):
     menu_items = ["Back", "Edit Playlist name", "Delete Playlist", "Add Song to Playlist"] + [song.title for song in playlist.songs()]
     terminal_menu = TerminalMenu(menu_items, title = f"Select a Song from {playlist.name}")
     while (choice := terminal_menu.show()) != 0:
+        if choice == 1:
+            edit_playlist_name(playlist)
+            return CHANGE
+            
         if choice >= 4: 
             song = Song.find_by_title(menu_items[choice])
             song_menu(song)
+    
+    return CONSTANT
+
+def edit_playlist_name(playlist: Playlist):
+    name = input("Enter playlist name: ").strip()
+    playlist.name = name
+    playlist.save()
 
 def song_menu(song: Song):
     menu_items = ["Back", "Edit Song name", "Edit Artist name", "Delete Song from Playlist"]
