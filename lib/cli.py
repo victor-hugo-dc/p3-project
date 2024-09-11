@@ -15,10 +15,10 @@ def list_playlists():
     while (choice := terminal_menu.show()) != 0:
         playlist = Playlist.find_by_name(menu_items[choice])
         if playlist_menu(playlist):
-            break # the playlist names must be refreshed
+            return # the playlist names must be refreshed
 
 def playlist_menu(playlist: Playlist):
-    menu_items = ["Back", "Edit Playlist name", "Delete Playlist", "Add Song to Playlist"] + [song.title for song in playlist.songs()]
+    menu_items = ["Back", "Edit Playlist name", "Delete Playlist", "Add Song to Playlist"] + [f"{song.title}" for song in playlist.songs()]
     terminal_menu = TerminalMenu(menu_items, title = f"Select a Song from {playlist.name}")
     while (choice := terminal_menu.show()) != 0:
         if choice == 1:
@@ -34,7 +34,7 @@ def playlist_menu(playlist: Playlist):
             
         if choice >= 4: 
             song = Song.find_by_title(menu_items[choice])
-            song_menu(song)
+            return song_menu(song)
     
     return CONSTANT
 
@@ -59,9 +59,39 @@ def add_song_to_playlist(playlist: Playlist):
 
 def song_menu(song: Song):
     menu_items = ["Back", "Edit Song name", "Edit Artist name", "Delete Song from Playlist"]
-    terminal_menu = TerminalMenu(menu_items, title = f"{song.title}")
-    while (choice := terminal_menu.show()) != 0:
-        pass
+    terminal_menu = TerminalMenu(menu_items, title = f"{song.title} by {song.artist}")
+    if (choice := terminal_menu.show()) != 0:
+        if choice == 1:
+            edit_song_title(song)
+            return CHANGE
+        
+        elif choice == 2:
+            edit_song_artist(song)
+            return CHANGE
+        
+        elif choice == 3:
+            return delete_song(song)
+    
+    return CONSTANT
+
+def edit_song_title(song: Song):
+    title = input("Enter song title: ").strip()
+    song.title = title
+    song.save()
+
+def edit_song_artist(song: Song):
+    artist = input("Enter song artist: ").strip()
+    song.artist = artist
+    song.save()
+
+def delete_song(song: Song):
+    menu_items = ["Yes", "No"]
+    terminal_menu = TerminalMenu(menu_items, title = f"Delete {song.title}?")
+    if terminal_menu.show() == 0:
+        song.delete()
+        return CHANGE
+    
+    return CONSTANT
 
 def main():
     functions: dict = {
