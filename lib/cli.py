@@ -27,6 +27,10 @@ def playlist_menu(playlist: Playlist):
         
         elif choice == 2:
             return delete_playlist(playlist)
+        
+        elif choice == 3:
+            add_song_to_playlist(playlist)
+            return CHANGE
             
         if choice >= 4: 
             song = Song.find_by_title(menu_items[choice])
@@ -47,6 +51,11 @@ def delete_playlist(playlist: Playlist):
         return CHANGE
     
     return CONSTANT
+
+def add_song_to_playlist(playlist: Playlist):
+    title = input(f"Enter song title for playlist '{playlist.name}': ").strip()
+    artist = input(f"Enter artist for song '{title}':").strip()
+    Song.create(title, artist, playlist.id)
 
 def song_menu(song: Song):
     menu_items = ["Back", "Edit Song name", "Edit Artist name", "Delete Song from Playlist"]
