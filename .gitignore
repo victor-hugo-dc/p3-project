@@ -69,3 +69,6 @@ Thumbs.db
 
 # Pyre type checker
 .pyre/
+
+# Database
+*.db
