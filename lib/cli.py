@@ -1,10 +1,15 @@
 from simple_term_menu import TerminalMenu
+from models.playlist import Playlist
 
 def create_playlist():
-    pass
+    name = input("Enter playlist name: ").strip()
+    Playlist.create(name)
 
 def list_playlists():
-    pass
+    menu_items = ["Back"] + [playlist.name for playlist in Playlist.get_all()]
+    terminal_menu = TerminalMenu(menu_items, title="Select a Playlist")
+    while (choice := terminal_menu.show()) != 0:
+        pass
 
 def main():
     functions: dict = {
