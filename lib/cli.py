@@ -24,6 +24,9 @@ def playlist_menu(playlist: Playlist):
         if choice == 1:
             edit_playlist_name(playlist)
             return CHANGE
+        
+        elif choice == 2:
+            return delete_playlist(playlist)
             
         if choice >= 4: 
             song = Song.find_by_title(menu_items[choice])
@@ -35,6 +38,15 @@ def edit_playlist_name(playlist: Playlist):
     name = input("Enter playlist name: ").strip()
     playlist.name = name
     playlist.save()
+
+def delete_playlist(playlist: Playlist):
+    menu_items = ["Yes", "No"]
+    terminal_menu = TerminalMenu(menu_items, title = f"Delete {playlist.name}?")
+    if terminal_menu.show() == 0:
+        playlist.delete()
+        return CHANGE
+    
+    return CONSTANT
 
 def song_menu(song: Song):
     menu_items = ["Back", "Edit Song name", "Edit Artist name", "Delete Song from Playlist"]
