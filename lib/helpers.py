@@ -10,10 +10,11 @@ def create_playlist():
 def list_playlists():
     menu_items = ["Back"] + [playlist.name for playlist in Playlist.get_all()]
     terminal_menu = TerminalMenu(menu_items, title="Select a Playlist")
-    while (choice := terminal_menu.show()) != 0:
+    exit_loop = False
+    while (choice := terminal_menu.show()) != 0 and not exit_loop:
         playlist = Playlist.find_by_name(menu_items[choice])
         if playlist_menu(playlist):
-            return # the playlist names must be refreshed
+            exit_loop = True
 
 def playlist_menu(playlist: Playlist):
     menu_items = ["Back", "Edit Playlist name", "Delete Playlist", "Add Song to Playlist"] + [f"{song.title}" for song in playlist.songs()]
